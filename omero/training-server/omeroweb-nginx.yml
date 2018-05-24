@@ -1,0 +1,170 @@
+# Additional Nginx configuration including Let's Encrypt
+# Should be run when less than 10 days remain on the certificate
+# See the remaining_days parameter:
+# https://docs.ansible.com/ansible/2.3/letsencrypt_module.html
+
+- hosts: outreach.openmicroscopy.org
+
+  roles:
+  - role: openmicroscopy.selinux-utils
+
+  tasks:
+
+  - name: Create additional nginx include directory
+    become: yes
+    file:
+      path: /etc/nginx/conf.d-nested-includes
+      state: directory
+
+  # Inspired by
+  # https://github.com/openmicroscopy/prod-playbooks/blob/7695bf8b1c4f0ae4314524366b91c300c1fdb30b/nightshade-webclients.yml#L119
+  - name: omero-web nginx nested include
+    become: yes
+    lineinfile:
+      destfile: /etc/nginx/conf.d/omero-web.conf
+      insertafter: 'server {'
+      line: '    include /etc/nginx/conf.d-nested-includes/*.conf;'
+    notify:
+    - reload nginx
+
+  - name: letsencrypt ssl directory
+    become: yes
+    file:
+      path: /etc/letsencrypt/private
+      owner: root
+      group: root
+      mode: 0700
+      recurse: yes
+      state: directory
+
+  - name: letsencrypt http challenge directory
+    become: yes
+    file:
+      path: /srv/www/letsencrypt/challenge
+      recurse: yes
+      state: directory
+      serole: _default
+      setype: _default
+      seuser: _default
+
+  - name: letsencrypt nginx challenge location
+    become: yes
+    copy:
+      content: |
+        location /.well-known/acme-challenge/ {
+            alias /srv/www/letsencrypt/challenge/;
+        }
+      dest: /etc/nginx/conf.d-nested-includes/letsencrypt.conf
+    notify:
+    - reload nginx
+
+  - name: Ensure nginx is reloaded
+    meta: flush_handlers
+
+  - name: letsencrypt account key
+    become: yes
+    command: openssl genrsa -out /etc/letsencrypt/private/account.key 2048
+    args:
+      creates: /etc/letsencrypt/private/account.key
+
+  - name: letsencrypt csr
+    become: yes
+    command: >
+      openssl req -new -newkey rsa:2048 -nodes
+      -out /etc/letsencrypt/private/domain.csr
+      -keyout /etc/letsencrypt/private/domain.key
+      -subj "{{ letsencrypt_subject }}"
+    args:
+      creates: /etc/letsencrypt/private/domain.csr
+
+  - name: letsencrypt get challenge
+    become: yes
+    letsencrypt:
+      account_email: "{{ letsencrypt_email }}"
+      account_key: /etc/letsencrypt/private/account.key
+      agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+      csr: /etc/letsencrypt/private/domain.csr
+      dest: /etc/letsencrypt/private/domain.crt
+      acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    register: letsencrypt_challenge
+
+  - name: letsencrypt answer challenge
+    become: yes
+    copy:
+      # Should always begin .well-known/acme-challenge/
+      dest: /srv/www/letsencrypt/challenge/{{ letsencrypt_challenge.challenge_data[letsencrypt_cn]['http-01'].resource | basename }}
+      content: "{{ letsencrypt_challenge.challenge_data[letsencrypt_cn]['http-01'].resource_value }}"
+    when: 'letsencrypt_challenge | changed'
+
+  - name: letsencrypt get certificate
+    become: yes
+    letsencrypt:
+      account_email: "{{ letsencrypt_email }}"
+      account_key: /etc/letsencrypt/private/account.key
+      agreement: https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf
+      csr: /etc/letsencrypt/private/domain.csr
+      dest: /etc/letsencrypt/private/domain.crt
+      acme_directory: https://acme-v01.api.letsencrypt.org/directory
+      data: "{{ letsencrypt_challenge }}"
+
+  - name: letsencrypt get certificate chain
+    become: yes
+    get_url:
+      dest: /etc/letsencrypt/private/zzzz-letsencrypt-chain.crt
+      url: https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt
+
+  - name: letsencrypt create full certificate chain
+    become: yes
+    assemble:
+      src: /etc/letsencrypt/private
+      dest: /etc/letsencrypt/full-chain.crt
+      regexp: 'crt$'
+      mode: '0600'
+
+  - name: letsencrypt nginx certificate configuration
+    become: yes
+    copy:
+      content: |
+        listen 443 ssl;
+        ssl_certificate /etc/letsencrypt/full-chain.crt;
+        ssl_certificate_key /etc/letsencrypt/private/domain.key;
+      dest: /etc/nginx/conf.d-nested-includes/https.conf
+    notify:
+    - reload nginx
+
+  # Needed for /grafana /prometheus (maybe because of the ports?)
+  - name: nginx | selinux allow network connect
+    become: yes
+    seboolean:
+      name: httpd_can_network_connect
+      state: yes
+      persistent: yes
+    when: selinux_enabled
+
+  - name: nginx proxy grafana and prometheus
+    become: yes
+    copy:
+      content: |
+        location /grafana/ {
+            proxy_pass http://127.0.0.1:3000/;
+            proxy_redirect http://127.0.0.1:3000/ $scheme://$server_name;
+        }
+        location /prometheus/ {
+            proxy_pass http://127.0.0.1:9090/;
+            proxy_redirect http://127.0.0.1:9090/ $scheme://$server_name;
+        }
+      dest: /etc/nginx/conf.d-nested-includes/proxy-monitoring.conf
+    notify:
+    - reload nginx
+
+  handlers:
+  - name: reload nginx
+    become: yes
+    service:
+      name: nginx
+      state: reloaded
+
+  vars:
+    letsencrypt_cn: outreach.openmicroscopy.org
+    letsencrypt_email: sysadmin@openmicroscopy.org
+    letsencrypt_subject: "/C=GB/ST=/L=Dundee/O=University of Dundee/OU=Open Microscopy Environment/CN={{ letsencrypt_cn }}"
