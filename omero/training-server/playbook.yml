@@ -284,3 +284,6 @@
       omero.ldap.user_filter: "(objectClass=person)"
       omero.ldap.user_mapping: "omeName=uid,firstName=givenName,lastName=sn,email=mail"
       omero.ldap.username: "uid=admin,ou=system"
+
+
+- include: monitoring.yml
