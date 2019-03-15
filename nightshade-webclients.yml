@@ -69,7 +69,6 @@
         # variable comes from role openmicroscopy.omero-web
         virtualenv: "{{ omero_web_basedir }}/venv"
         virtualenv_site_packages: yes
-      when: "'ns-web.openmicroscopy.org' in inventory_hostname"
       notify:
         - restart omero-web
 
@@ -153,21 +152,6 @@
         owner: "root"
         group: "root"
         mode: "u=rw,go=r"
-      when: "'ns-web.openmicroscopy.org' in inventory_hostname"
-      notify:
-        - restart omero-web
-
-    # Config for OMERO.web plugins, loaded into OMERO.web by the
-    # omero.web systemd restart.
-    - name:
-      become: yes
-      template:
-        src: templates/omero-web-config-for-webapps_ns-web-pub.j2
-        dest: "{{ omero_web_basedir }}/config/omero-web-config-for-webapps.omero"
-        owner: "root"
-        group: "root"
-        mode: "u=rw,go=r"
-      when: "'ns-web-pub.openmicroscopy.org' in inventory_hostname"
       notify:
         - restart omero-web
 
@@ -183,7 +167,6 @@
               location /pub/schleicher-et-al-2017 {
                   return 307 /webclient/?show=project-27936;
               }
-      when: "'ns-web-pub.openmicroscopy.org' in inventory_hostname"
       notify:
         - restart nginx
 
