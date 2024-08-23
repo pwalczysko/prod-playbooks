@@ -1,62 +1,50 @@
 ---
-name: Molecule
-# yamllint disable-line rule:truthy
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: '29 21 * * 0'
+dependency:
+  name: galaxy
+  options:
+    role-file: molecule/resources/requirements.yml
+driver:
+  name: docker
+lint: |
+    yamllint .
+    ansible-lint
+    flake8
+platforms:
+  - name: omero-server-rockylinux9
+    image: eniocarboni/docker-rockylinux-systemd:9
+    image_version: latest
+    command: /sbin/init
+    privileged: true
+    cgroupns_mode: host
+    tmpfs:
+      - /sys/fs/cgroup
+    groups:
+      - docker-hosts
+      - omero-py3
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  # To test the upgrade process without breaking the idempotence check
+  # - install omero during the prepare step which is only run once
+  # - attempt to upgrade in the converge step
+  options:
+    v: true
+    diff: true
+    # tags: [x]
+  playbooks:
+    # TODO: Use shared test playbooks
+    converge: ../resources/playbook.yml
+  inventory:
+    host_vars:
+      omero-server-rockylinux9:
+        postgresql_version: "13"
+        omero_server_selfsigned_certificates: true
+scenario:
+  name: rockylinux9
+  converge_sequence:
+    - converge
 
-jobs:
-
-  list-scenarios:
-    runs-on: ubuntu-22.04
-    outputs:
-      matrix: ${{ steps.listscenarios.outputs.scenarios }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: listscenarios
-        uses: ome/action-ansible-molecule-list-scenarios@main
-
-  test:
-    name: Test
-    needs:
-      - list-scenarios
-    runs-on: ubuntu-22.04
-    strategy:
-      # Keep running so we can see if other tests pass
-      fail-fast: false
-      matrix:
-        scenario: ${{fromJson(needs.list-scenarios.outputs.matrix)}}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: Install Ansible & Molecule
-        run: |
-            pip install "ansible<8" "ansible-lint<6.13" flake8
-            pip install "molecule<5" "ansible-compat<4"
-            pip install molecule-plugins[docker] pytest-testinfra
-      - name: Run molecule
-        run: molecule test -s "${{ matrix.scenario }}"
-
-  publish:
-    name: Galaxy
-    if: startsWith(github.ref, 'refs/tags')
-    needs:
-      - test
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Read the role name
-        id: role-name
-        run: |
-          name=$(grep 'role_name' meta/main.yml | sed -r 's/^[^:]*:(.*)$/\1/' | tr -d '[:space:]')  # noqa
-          echo "rolename=$name" >> "$GITHUB_OUTPUT"
-      - name: Publish to Galaxy
-        uses: ome/action-ansible-galaxy-publish@main
-        with:
-          galaxy-api-key: ${{ secrets.GALAXY_API_KEY }}
-          galaxy-version: ${{ github.ref_name }}
-          role-name: ${{ steps.role-name.outputs.rolename }}
+verifier:
+  name: testinfra
+  directory: ../resources/tests/
