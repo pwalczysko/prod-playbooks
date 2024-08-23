@@ -41,7 +41,7 @@ provisioner:
         postgresql_version: "13"
         omero_server_selfsigned_certificates: true
 scenario:
-  name: rockylinux9
+  name: omero-training-server
   converge_sequence:
     - converge
 
