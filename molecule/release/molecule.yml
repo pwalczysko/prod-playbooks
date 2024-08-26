@@ -9,11 +9,11 @@ lint: |
     flake8
 platforms:
   - name: release
-    image: centos:7
+    image: eniocarboni/docker-rockylinux-systemd:9
     groups:
       - idr0-slot3.openmicroscopy.org
   - name: prerelease
-    image: centos:7
+    image: eniocarboni/docker-rockylinux-systemd:9
     groups:
       - idr0-slot3.openmicroscopy.org
 provisioner:
