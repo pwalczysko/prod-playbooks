@@ -45,7 +45,7 @@
       # omero_server_rootpassword:
       omero_server_dbname: omero
       omero_server_systemd_limit_nofile: 16384
-      python3_virtualenv_version: "3.11"
+      python3_virtualenv_version: "3.12"
 
     - role: nginx
       tags: ssl
