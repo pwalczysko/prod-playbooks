@@ -48,13 +48,12 @@
       # omero_server_rootpassword:
       omero_server_dbname: omero
       omero_server_systemd_limit_nofile: 16384
-      python3_virtualenv_version: "3.11"
 
     - role: nginx
       tags: ssl
 
     - role: omero_web
-      tags: ssl
+      tags: easypeasy
       # Defaults overridden in private configuration
       omero_web_systemd_limit_nofile: 16384
       omero_web_python_addons:
@@ -107,10 +106,12 @@
   post_tasks:
 
     - name: Allow nginx to connect to omero-web
+      tags: easypeasy
       become: yes
       command: setsebool -P httpd_can_network_connect on
 
     - name: NGINX - Performance tuning - worker processes
+      tags: easypeasy
       become: true
       ansible.builtin.replace:
         path: "/etc/nginx/nginx.conf"
@@ -122,6 +123,7 @@
     # cf https://www.digitalocean.com/community/tutorials/
     # how-to-optimize-nginx-configuration
     - name: NGINX - Performance tuning - worker connections
+      tags: easypeasy
       become: true
       ansible.builtin.replace:
         path: "/etc/nginx/nginx.conf"
@@ -129,6 +131,7 @@
         replace: "worker_connections 65000;"
 
     - name: NGINX - create nested includes directory
+      tags: easypeasy
       become: true
       ansible.builtin.file:
         path: /etc/nginx/conf.d-nested-includes
@@ -136,6 +139,7 @@
         mode: 0755
 
     - name: NGINX - SSL Configuration
+      tags: easypeasy
       become: true
       template:
         src: templates/nginx-confdnestedincludes-ssl-conf.j2
@@ -145,6 +149,7 @@
         - restart nginx
 
     - name: NGINX - OMERO websockets
+      tags: easypeasy
       become: true
       template:
         src: templates/nginx-confdnestedincludes-omerows-conf.j2
@@ -154,6 +159,7 @@
         - restart nginx
 
     - name: NGINX - websocket proxy support
+      tags: easypeasy
       become: true
       template:
         src: templates/nginx-confd-websockets-conf.j2
@@ -163,6 +169,7 @@
         - restart nginx
 
     - name: Config for OMERO.web plugins
+      tags: easypeasy
       become: true
       template:
         src: templates/omero-web-config-for-webapps.j2
@@ -175,6 +182,7 @@
         - restart omero-web
 
     - name: OMERO.web config for CORS
+      tags: easypeasy
       become: true
       template:
         src: templates/omero-web-config-for-cors.j2
@@ -186,6 +194,7 @@
         - restart omero-web
 
     - name: OMERO.web config for signup app
+      tags: easypeasy
       become: true
       template:
         src: templates/omero-web-config-signup.j2
@@ -205,6 +214,7 @@
         state: absent
 
     - name: Create a figure scripts directory
+      tags: easypeasy
       become: true
       ansible.builtin.file:
         path: "{{ omero_server_basedir }}/OMERO.server/lib/\
@@ -216,6 +226,7 @@
         group: "omero-server"
 
     - name: Download the Figure_To_Pdf.py script
+      tags: easypeasy
       become: true
       ansible.builtin.get_url:
         url: "https://raw.githubusercontent.com/ome/omero-figure/\
@@ -229,6 +240,7 @@
         force: true
   
   vars:
+    python3_virtualenv_version: "3.12"
     omero_server_selfsigned_certificates: false
     icessl_default_dir_self: "{{ omero_server_basedir }}/selfsigned"
     icessl_default_dir_noself: "/etc/ssl/omero"
