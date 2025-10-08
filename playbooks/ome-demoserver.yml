@@ -240,7 +240,7 @@
         force: true
   
   vars:
-    python3_virtualenv_version: "3.12"
+    python_version: "3.12"
     omero_server_selfsigned_certificates: false
     icessl_default_dir_self: "{{ omero_server_basedir }}/selfsigned"
     icessl_default_dir_noself: "/etc/ssl/omero"
