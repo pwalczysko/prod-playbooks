@@ -84,26 +84,47 @@
   src: https://github.com/khaledk2/ansible-role-versioncontrol-utils
   version: update_ansible_version
 
-- src: ome.ssl_certificate
-  version: 0.5.0
+# - src: ome.ssl_certificate
+#   version: 0.5.0
+- name: ssl_certificate
+  src: https://github.com/khaledk2/ansible-role-ssl-certificate
+  version: Update_ansibel
 
-- src: nfs_mount
-  version: 2.0.0
+# - src: nfs_mount
+#   version: 2.0.0
+- name: nfs_mount
+  src: https://github.com/khaledk2/ansible-role-nfs-mount
+  version: update_ansibel
 
-- src: nfs_share
-  version: 1.0.0
+# - src: nfs_share
+#   version: 1.0.0
+- name: nfs_share
+  src: https://github.com/pwalczysko/ansible-role-nfs-share
+  version: upgrade-framework
 
-- src: iptables_raw
-  version: 0.4.0
+# - src: iptables_raw
+#   version: 0.4.0
+- name: iptables_raw
+  src: https://github.com/khaledk2/ansible-role-iptables-raw
+  version: update_ansible
 
-- src: ome.cli_utils
-  version: 1.2.5
+# - src: ome.cli_utils
+#   version: 1.2.5
+- name: cli_utils
+  src: https://github.com/pwalczysko/ansible-role-cli-utils
+  version: update-framework
 
-- src: ome.docker
-  version: 3.2.2
+# - src: ome.docker
+#   version: 3.2.2
+- name: docker
+  src: https://github.com/khaledk2/ansible-role-docker
+  version: update_ansible_ver
 
-- src: ome.postgresql_backup
-  version: 0.3.0
+# - src: ome.postgresql_backup
+#   version: 0.3.0
+- name: postgresql_backup
+  src: https://github.com/pwalczysko/ansible-role-postgresql-backup
+  version: update-framework
 
 # - src: ome.omero_user
 #   version: 0.4.0
@@ -111,5 +132,8 @@
   src: https://github.com/pwalczysko/ansible-role-omero-user
   version: include
 
-- src: ome.lvm_partition
-  version: 1.2.0
+# - src: ome.lvm_partition
+#   version: 1.2.0
+- name: lvm_partition
+  src: https://github.com/khaledk2/ansible-role-lvm-partition
+  version: updater_ansible_version
