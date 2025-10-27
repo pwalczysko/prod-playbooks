@@ -29,8 +29,7 @@
 
   roles:
 
-    - role: ome.postgresql
-      tags: ssl
+    - role: postgresql
       # no_log: true
       postgresql_databases:
       - name: omero
@@ -50,7 +49,6 @@
       omero_server_systemd_limit_nofile: 16384
 
     - role: nginx
-      tags: ssl
 
     - role: omero_web
       tags: easypeasy
@@ -68,7 +66,6 @@
         - "omero-py>={{ omero_py_release }}"
 
     - role: omero_user
-      tags: ssl
       no_log: true
       omero_user_system: omero-server
       omero_user_admin_user: root
@@ -86,11 +83,10 @@
             {{ secret_omero_web_public_password | default('public') }}
           groups: "--group-name public"
 
-    - role: ome.ssl_certificate
+    - role: ssl_certificate
       tags: ssl
 
-    - role: ome.postgresql_backup
-      tags: ssl
+    - role: postgresql_backup
       postgresql_backup_compress: true
       postgresql_backup_dir: /OMERO/pgbackup
       postgresql_backup_filename_format: "nightly-omero-%a.pgdump.gz"
