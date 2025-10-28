@@ -32,7 +32,7 @@ provisioner:
     diff: true
   inventory:
     host_vars:
-      ome-demoserver:
+      demoserver-ubuntu2204:
         postgresql_version: "16"
         omero_server_selfsigned_certificates: true
         omero_server_dbhost: localhost
