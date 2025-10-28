@@ -10,7 +10,7 @@ lint: |
     ansible-lint
     flake8
 platforms:
-  - name: ome-demoserver
+  - name: demoserver-rockylinux9
     image: eniocarboni/docker-rockylinux-systemd:9
     image_version: latest
     command: /sbin/init
@@ -25,8 +25,8 @@ platforms:
 provisioner:
   name: ansible
   playbooks:
-    prepare: ../prepare.yml
-    converge: ../../playbooks/ome-demoserver.yml
+    prepare: prepare.yml
+    converge: ../../../playbooks/ome-demoserver.yml
   options:
     v: true
     diff: true
@@ -45,7 +45,7 @@ provisioner:
   lint:
     name: ansible-lint
 scenario:
-  name: ome-demoserver
+  name: demoserver-rockylinux9
   test_sequence:
     # dependency must come first, otherwise the first "destroy" errors
     - dependency
@@ -61,4 +61,4 @@ scenario:
     - destroy
 verifier:
   name: testinfra
-  directory: ../tests/
+  directory: ../../tests/
