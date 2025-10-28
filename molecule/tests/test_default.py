@@ -13,7 +13,7 @@ OMERO_LOGIN = '-C -s localhost -u root -w omero'
     'nginx',
     'omero-server',
     'omero-web',
-    'postgresql-16',
+    'postgresql',
 ])
 def test_service_running_and_enabled(host, name):
     service = host.service(name)
