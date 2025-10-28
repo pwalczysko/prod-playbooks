@@ -61,4 +61,4 @@ scenario:
     - destroy
 verifier:
   name: testinfra
-  directory: ../../tests/
+  directory: ../tests/
