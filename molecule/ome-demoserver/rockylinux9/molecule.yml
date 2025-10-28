@@ -45,7 +45,7 @@ provisioner:
   lint:
     name: ansible-lint
 scenario:
-  name: demoserver-rockylinux9
+  name: rockylinux9
   test_sequence:
     # dependency must come first, otherwise the first "destroy" errors
     - dependency

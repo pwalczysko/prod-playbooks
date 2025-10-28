@@ -45,7 +45,7 @@ provisioner:
   lint:
     name: ansible-lint
 scenario:
-  name: demoserver-ubuntu2204
+  name: ubuntu2204
   test_sequence:
     # dependency must come first, otherwise the first "destroy" errors
     - dependency
