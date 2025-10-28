@@ -4,7 +4,7 @@
 # also pass `--extra-vars upgrade_webapps=True`
 
 - name: Demo server playbook
-  hosts: ome-demoservers-test
+  hosts: ome-demoservers
   pre_tasks:
     - name: Install open-vm-tools if system is a VMware vm
       become: true
