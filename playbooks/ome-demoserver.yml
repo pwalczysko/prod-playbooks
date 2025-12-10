@@ -4,7 +4,7 @@
 # also pass `--extra-vars upgrade_webapps=True`
 
 - name: Demo server playbook
-  hosts: ome-demoservers-test
+  hosts: ome-demoservers
   pre_tasks:
     - name: Install open-vm-tools if system is a VMware vm
       become: true
@@ -221,6 +221,8 @@
   
   vars:
     # python_version: "3.12"
+    java_temurin: true
+    java_version: "11"
     omero_server_selfsigned_certificates: true
     icessl_default_dir_self: "{{ omero_server_basedir }}/selfsigned"
     icessl_default_dir_noself: "/etc/ssl/omero"
