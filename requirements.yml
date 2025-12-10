@@ -6,8 +6,12 @@
 - src: ome.basedeps
   version: 1.4.0
 
-- src: ome.java
-  version: 2.3.0
+# - src: ome.java
+#   version: 2.3.0
+
+- name: java
+  src: https://github.com/dominikl/ansible-role-java
+  version: temurin
 
 - src: ome.python3_virtualenv
   version: 0.3.0
@@ -24,8 +28,12 @@
 - src: ome.deploy_archive
   version: 0.3.0
 
-- src: ome.omero_server
-  version: 7.0.0
+# - src: ome.omero_server
+#   version: 7.0.0
+
+- name: omero_server
+  src: https://github.com/pwalczysko/ansible-role-omero-server
+  version: temurin
 
 - src: ome.omero_web
   version: 6.0.0

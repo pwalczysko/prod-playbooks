@@ -4,7 +4,7 @@
 # also pass `--extra-vars upgrade_webapps=True`
 
 - name: Demo server playbook
-  hosts: ome-demoservers
+  hosts: ome-demoservers-test
   pre_tasks:
     - name: Install open-vm-tools if system is a VMware vm
       become: true
@@ -37,7 +37,7 @@
         password: "{{ omero_server_dbpassword | default('omero') }}"
         databases: []
 
-    - role: ome.omero_server
+    - role: omero_server
       # Defaults overridden in private configuration
       # omero_server_dbuser:
       # omero_server_dbpassword:
