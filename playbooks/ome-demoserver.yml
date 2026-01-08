@@ -48,6 +48,7 @@
     - role: ome.nginx
 
     - role: ome.omero_web
+      tags: web
       # Defaults overridden in private configuration
       omero_web_systemd_limit_nofile: 16384
       omero_web_python_addons:
@@ -207,6 +208,7 @@
         group: "omero-server"
 
     - name: Download the Figure_To_Pdf.py script
+      tags: web
       become: true
       ansible.builtin.get_url:
         url: "https://raw.githubusercontent.com/ome/omero-figure/\
