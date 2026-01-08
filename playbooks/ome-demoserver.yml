@@ -211,8 +211,8 @@
       tags: web
       become: true
       ansible.builtin.get_url:
-        url: "https://raw.githubusercontent.com/ome/omero-figure/\
-          {{ omero_figure_script_release }}/omero_figure/scripts/omero/\
+        url: "https://raw.githubusercontent.com/ome/omero-figure/v\
+          {{ omero_figure_release }}/omero_figure/scripts/omero/\
           figure_scripts/Figure_To_Pdf.py"
         dest: "{{ omero_server_basedir }}/OMERO.server/lib/\
           scripts/omero/figure_scripts/Figure_To_Pdf.py"
@@ -233,8 +233,6 @@
     nginx_version: 1.28.0
     omero_figure_release: >-
       {{ omero_figure_release_override | default('7.3.0') }}
-    omero_figure_script_release: >-
-      {{ omero_figure_script_release_override | default('v7.2.1') }}
     omero_fpbioimage_release: >-
       {{ omero_fpbioimage_release_override | default('0.4.1') }}
     omero_iviewer_release: >-
