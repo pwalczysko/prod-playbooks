@@ -162,6 +162,7 @@
         - restart nginx
 
     - name: Config for OMERO.web plugins
+      tags: web
       become: true
       ansible.builtin.template:
         src: templates/omero-web-config-for-webapps.j2
@@ -174,6 +175,7 @@
         - restart omero-web
 
     - name: OMERO.web config for CORS
+      tags: web
       become: true
       ansible.builtin.template:
         src: templates/omero-web-config-for-cors.j2
@@ -185,6 +187,7 @@
         - restart omero-web
 
     - name: OMERO.web config for signup app
+      tags: web
       become: true
       ansible.builtin.template:
         src: templates/omero-web-config-signup.j2
