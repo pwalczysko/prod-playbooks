@@ -61,6 +61,8 @@
         - "omero-parade=={{ omero_parade_release }}"
         - "omero-signup=={{ omero_signup_release }}"
         - "omero-py>={{ omero_py_release }}"
+        # This is to force minimal Django version - optional
+        - "Django>=5.2.10"
 
     - role: ome.omero_user
       no_log: true
