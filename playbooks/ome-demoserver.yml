@@ -47,6 +47,9 @@
 
     - role: ome.nginx
 
+    - role: ome.redis
+      tags: web
+
     - role: ome.omero_web
       tags: web
       # Defaults overridden in private configuration
@@ -330,6 +333,11 @@
       - "omero-py>={{ omero_py_release }}"
 
     omero_web_config_set:
+      omero.web.caches:
+        default:
+          BACKEND: django_redis.cache.RedisCache
+          LOCATION: redis://127.0.0.1:6379/0
+      omero.web.session_engine: django.contrib.sessions.backends.cache
       omero.mail.config: true
       omero.mail.from: "{{ omero_server_mail_from }}"
       omero.mail.host: "{{ omero_server_mail_host }}"
