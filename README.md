@@ -7,15 +7,12 @@ At the moment, only the `ome-demoserver.yml` playbook is available here. This is
 
 We are in the process of adding more OME team's production playbooks here.
 
-If you are looking for examples of running your own production OMERO.server see
+For other ansible examples, see [ome.omero_server](https://github.com/ome/ansible-role-omero-server) and [ome.omero_web](https://github.com/ome/ansible-role-omero-web) roles.
 
-  https://github.com/ome/omero-deployment-examples
+Run
+---
 
-
-Details
--------
-
-- Install `Ansible` >2.10
+- Install `Ansible` >=2.11
 - Install required roles: `ansible-galaxy install -r requirements.yml`
 - Run the `ome-demoserver.yml` playbook:
 
@@ -36,6 +33,6 @@ ansible-playbook --ask-become --become -i $PATH/TO/INVENTORY ome-demoserver.yml 
 Testing
 -------
 
-We test the playbooks here on Rocky Linux 9 platform via [Ansible Molecule](https://molecule.readthedocs.io/), see test scenarios under [`molecule`](molecule).
+We test the playbooks here on Rocky Linux 9 and Ubuntu 22.04 platforms via [Ansible Molecule](https://molecule.readthedocs.io/), see test scenarios under [`molecule`](molecule).
 
-The main components of the playbooks (roles) are being independently tested on both Rocky Linux 9 and Ubuntu 22.04. See e.g. [ome.omero_server role](https://github.com/ome/ansible-role-omero-server/tree/master/molecule).
+The main components of the playbooks (roles) are being independently tested on both Rocky Linux 9 and Ubuntu 22.04. See [ome.omero_server](https://github.com/ome/ansible-role-omero-server/tree/master/molecule) and [ome.omero_web](https://github.com/ome/ansible-role-omero-web/tree/master/molecule) roles.
