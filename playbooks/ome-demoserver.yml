@@ -60,7 +60,7 @@
           - zlib1g
           - libpq5
           - postgresql-client-16
-          - postgresql-client-common
+          # - postgresql-client-common
         state: present
 
 
