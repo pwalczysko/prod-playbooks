@@ -39,7 +39,6 @@
           - libzstd1
           - zlib1g
           - libpq5
-          - libpq-oauth
         state: present
 
     # - name: Postgres | install gpg for apt repo
