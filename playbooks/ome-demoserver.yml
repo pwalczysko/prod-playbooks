@@ -285,6 +285,8 @@
     # For https://github.com/openmicroscopy/ansible-role-java,
     # which is a dependency.
     java_jdk_install: true
+    java_versions:
+      - "11"
 
     # Check_MK (system monitoring) paths
     check_mk_agent_plugin_path: /usr/share/check-mk-agent/available-plugins
