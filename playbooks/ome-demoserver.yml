@@ -37,7 +37,7 @@
     #     password: "{{ omero_server_dbpassword | default('omero') }}"
     #     databases: []
 
-    - role: ome.basedeps
+    - role: ome.postgresql_client
 
     - role: ome.omero_server
       # Defaults overridden in private configuration
