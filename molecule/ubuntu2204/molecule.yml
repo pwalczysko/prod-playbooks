@@ -12,6 +12,8 @@ lint: |
 platforms:
   - name: demoserver-ubuntu2204
     image: eniocarboni/docker-ubuntu-systemd:22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
     image_version: latest
     command: /sbin/init
     privileged: true

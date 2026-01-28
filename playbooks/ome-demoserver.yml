@@ -38,7 +38,9 @@
           - libssl3
           - libzstd1
           - zlib1g
-          - libpq5
+          # - libpq5
+          # - postgresql-client-16
+          # - postgresql-client-common
         state: present
 
     # - name: Postgres | install gpg for apt repo
