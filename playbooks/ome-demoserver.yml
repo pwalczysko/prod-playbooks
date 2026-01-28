@@ -24,7 +24,27 @@
       set_fact:
         omero_certificates_key_override: server.key
       when: serverkey_file.stat.exists
-    
+
+    - name: Postgres | install gpg for apt repo
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name: gnupg
+        state: present
+
+    - name: Postgres | get postgresql apt key
+      become: true
+      ansible.builtin.apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state: present
+
+    - name: Postgres | setup apt repo
+      become: true
+      ansible.builtin.apt_repository:
+        codename: "{{ ansible_distribution_release }}"
+        repo: deb http://apt.postgresql.org/pub/repos/apt/
+              {{ ansible_distribution_release }}-pgdg main
+
     - name: Install something per Khaled
       become: true
       ansible.builtin.apt:
@@ -43,25 +63,6 @@
           - postgresql-client-common
         state: present
 
-    # - name: Postgres | install gpg for apt repo
-    #   become: true
-    #   ansible.builtin.apt:
-    #     update_cache: true
-    #     name: gnupg
-    #     state: present
-
-    # - name: Postgres | get postgresql apt key
-    #   become: true
-    #   ansible.builtin.apt_key:
-    #     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-    #     state: present
-
-    # - name: Postgres | setup apt repo
-    #   become: true
-    #   ansible.builtin.apt_repository:
-    #     codename: "{{ ansible_distribution_release }}"
-    #     repo: deb http://apt.postgresql.org/pub/repos/apt/
-    #           {{ ansible_distribution_release }}-pgdg main
 
     # - name: Postgres | install client packages
     #   become: true
