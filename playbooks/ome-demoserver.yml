@@ -25,6 +25,13 @@
         omero_certificates_key_override: server.key
       when: serverkey_file.stat.exists
 
+    - name: Postgres | install gpg for apt repo
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name: gnupg
+        state: present
+
   roles:
 
     # - role: ome.postgresql
