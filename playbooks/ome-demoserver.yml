@@ -38,7 +38,7 @@
           - libssl3
           - libzstd1
           - zlib1g
-      state: present
+        state: present
 
     # - name: Postgres | install gpg for apt repo
     #   become: true
