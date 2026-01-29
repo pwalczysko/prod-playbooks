@@ -25,52 +25,18 @@
         omero_certificates_key_override: server.key
       when: serverkey_file.stat.exists
 
-    - name: Postgres | install gpg for apt repo
-      become: true
+    - name: Install dirmngr
       ansible.builtin.apt:
-        update_cache: true
-        name: gnupg
+        name:
+          - dirmngr
         state: present
+        update_cache: yes
 
-    - name: Postgres | get postgresql apt key
-      become: true
-      ansible.builtin.apt_key:
-        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
-        state: present
-
-    - name: Postgres | setup apt repo
-      become: true
-      ansible.builtin.apt_repository:
-        codename: "{{ ansible_distribution_release }}"
-        repo: deb http://apt.postgresql.org/pub/repos/apt/
-              {{ ansible_distribution_release }}-pgdg main
-
-    - name: Install something per Khaled
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 86400
-        name:  
-          # - sensible-utils
-          # - libc6
-          # - liblz4-1
-          # - libreadline8
-          # - libssl3
-          # - libzstd1
-          # - zlib1g
-          # - libpq5
-          - postgresql-client-16
-          # - postgresql-client-common
-        state: present
-
-
-    # - name: Postgres | install client packages
-    #   become: true
-    #   ansible.builtin.apt:
-    #     update_cache: true
-    #     cache_valid_time: 86400
-    #     name: postgresql-client-{{ postgresql_version }}
-    #     state: present
+    - name: Ensure the man directory exists
+      ansible.builtin.file:
+        path: /usr/share/man/man1
+        state: directory
+        mode: '0755'
 
   roles:
 
