@@ -12,16 +12,16 @@ lint: |
 platforms:
   - name: demoserver-ubuntu2204
     image: ubuntu:22.04
-    image_version: latest
-    command: /sbin/init
-    privileged: true
-    cgroupns_mode: host
-    tmpfs:
-      - /sys/fs/cgroup
-    groups:
-      - docker-hosts
-      - omero-py3
-      - ome-demoservers
+    # image_version: latest
+    # command: /sbin/init
+    # privileged: true
+    # cgroupns_mode: host
+    # tmpfs:
+    #   - /sys/fs/cgroup
+    # groups:
+    #   - docker-hosts
+    #   - omero-py3
+    #   - ome-demoservers
 provisioner:
   name: ansible
   playbooks:
