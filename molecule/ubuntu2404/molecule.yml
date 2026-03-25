@@ -11,9 +11,9 @@ lint: |
     flake8
 platforms:
   - name: demoserver-ubuntu2404
-    image: ubuntu:noble
+    image: jrei/systemd-ubuntu:24.04
     image_version: latest
-    # command: /sbin/init
+    command: /sbin/init
     privileged: true
     cgroupns_mode: host
     tmpfs:
