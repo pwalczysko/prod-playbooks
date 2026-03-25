@@ -13,7 +13,7 @@ platforms:
   - name: demoserver-ubuntu2404
     image: ubuntu:noble
     image_version: latest
-    command: /sbin/init
+    # command: /sbin/init
     privileged: true
     cgroupns_mode: host
     tmpfs:
