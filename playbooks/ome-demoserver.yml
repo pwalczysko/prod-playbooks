@@ -7,12 +7,12 @@
   hosts: ome-demoservers
   pre_tasks:
     - name: Diagnose PGDG repository
-      run: |
+      become: true
+      ansible.builtin.shell: |
         cat /etc/redhat-release
-        cat /etc/yum.repos.d/pgdg-redhat-all.repo | grep -E '^\[|^baseurl=|^metalink=|^enabled='
-        sudo dnf repolist -v
-        sudo dnf clean metadata
-        sudo dnf makecache --refresh
+        grep -E '^\[|^baseurl=|^metalink=|^enabled=' /etc/yum.repos.d/pgdg-redhat-all.repo
+        dnf repolist -v
+      changed_when: false
 
     - name: Install open-vm-tools if system is a VMware vm
       become: true
