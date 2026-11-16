@@ -6,6 +6,14 @@
 - name: Demo server playbook
   hosts: ome-demoservers
   pre_tasks:
+    - name: Diagnose PGDG repository
+      run: |
+        cat /etc/redhat-release
+        cat /etc/yum.repos.d/pgdg-redhat-all.repo | grep -E '^\[|^baseurl=|^metalink=|^enabled='
+        sudo dnf repolist -v
+        sudo dnf clean metadata
+        sudo dnf makecache --refresh
+
     - name: Install open-vm-tools if system is a VMware vm
       become: true
       ansible.builtin.dnf:
